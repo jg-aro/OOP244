@@ -2,12 +2,13 @@
 Final Project Milestone 1
 Module: Menu
 Filename: Menu.cpp
-Version 1.0
+Version 1.1
 Author	Jasmin Aro
 Revision History
 -----------------------------------------------------------
 Date		Reason
 2024/11/12  Correct output reached
+2024/11/12  Documentation added, general clean up
 -----------------------------------------------------------
 I have done most coding by myself, with use of ChatGPT for
 debugging inquiries, specifically regarding namespaces. I had trouble
@@ -25,12 +26,10 @@ cstddef).
 
 using namespace std;
 namespace seneca {
-	MenuItem::MenuItem() {
-		m_content = nullptr;
-		setEmpty();
-	}
-	
-	void MenuItem::setEmpty() {
+
+	//Sets all member variables of MenuItem to safe empty state
+	void MenuItem::setEmpty() 
+	{
 		if (!(m_content == nullptr)) {
 			ut.strcpy(m_content, "");
 		}
@@ -39,7 +38,24 @@ namespace seneca {
 		m_rowNumber = 0;
 	}
 
-	MenuItem::MenuItem(const char* content, int indent, int indentSize, int rowNumber) {
+	//Checks validity of the MenuItem object. Returns true if valid.
+	bool MenuItem::isValid() const
+	{
+		return !(m_content == nullptr || isspace(*m_content) || m_indent > 4 || m_indentSize > 4);
+	}
+
+	//Constructor for MenuItem class
+	//Sets all member variables to safe empty state
+	MenuItem::MenuItem() 
+	{
+		m_content = nullptr;
+		setEmpty();
+	}
+	
+	//Rewrites the MenuItem class to the arguments of const char cstring, int indent, int indentSize, int rowNumber
+	//Must meet the condition: content != nullptr, indent > 4, indentSize > 4, rowNumber <= MaxItemNumber
+	MenuItem::MenuItem(const char* content, int indent, int indentSize, int rowNumber) 
+	{
 		if (rowNumber < 0) {
 			if (!(content == nullptr || indent > 4 || indentSize > 4))
 			{
@@ -60,7 +76,7 @@ namespace seneca {
 		}
 		else if (rowNumber < 0)
 		{
-
+			;
 		}
 		else
 		{
@@ -73,10 +89,17 @@ namespace seneca {
 		delete[] m_content;
 	}
 
-	//ostream& returns a reference to the output stream.
-	//its the datatype.
-	ostream& MenuItem::display(ostream& ostr) const //appending const to the function enables the function itself to be constant - NOTHING gets changed
-	{	
+	//Recieve no arguments
+	//Return an output stream from overloaded function
+	ostream& MenuItem::display() const 
+	{
+		return display(cout);
+	}
+
+	//Takes the output stream as an argument and writes into it
+	//Returns the output stream
+	ostream& MenuItem::display(ostream& ostr) const
+	{
 		if (m_content!= nullptr) {
 			int indent = m_indent;
 			int indentSize = m_indentSize;
@@ -107,19 +130,9 @@ namespace seneca {
 
 		return ostr;
 	}
-	ostream& MenuItem::display() const {
-		return display(cout);
-	}
-
-	//checks validity of the MenuItem object. returns true if valid
-	bool MenuItem::isValid() const
-	{
-		return !(m_content == nullptr || isspace(*m_content) || m_indent > 4 || m_indentSize > 4);
-	}
 
 	MenuItem::operator bool() const
 	{
 		return isValid();
 	}
-
 }
